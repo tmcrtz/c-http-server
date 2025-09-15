@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+        <link href="styles.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <meta property="og:description" content="best website ever created by mankind">
+        <title>best website ever (home)</title>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-dark bg-dark" data-bs-theme="dark">
+            <div class="container">
+                <a class="navbar-brand text-white" href="index0.html">
+                    <img src="smile.png" alt="generic smile" width="30" height="30">
+                    TYLER
+                </a>
+                <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navigationBar" aria-controls="navigationBar" aria-expanded="false" aria-label="Toggle the NavBar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse button-spacing" id="navigationBar">
+                    <ul class="navbar-nav">
+                        <li class="navbar-item active">
+                            <a href="index.html" class="nav-link text-white">
+                               &gt; Home &lt;
+                            </a>
+                        </li>
+                        <li class="navbar-item">
+                            <a href="index1.html" class="nav-link">
+                                My Education
+                            </a>
+                        </li>
+                        <li class="navbar-item">
+                            <a href="index2.html" class="nav-link">
+                                My Hobbies
+                            </a>
+                        </li>
+                        <li class="navbar-item">
+                            <a href="index3.html" class="nav-link">
+                                My Dreams
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="font-verdana" style="margin-top: 35px; margin-bottom: 20px; margin-left: 200px; margin-right: 200px; text-align:center">
+            <p>
+                Hello! Greetings from San Francisco, California!!
+            </p>
+            <p>
+                Welcome to my website!!
+            </p>
+        </div>
+        <div class="img-center" id="sf-images">
+            <img draggable="false" class="img-round sf-image-style" src="san-francisco-ggb.png" alt="San Francisco's Golden Gate Bridge" >
+            <img draggable="false" class="img-round sf-image-style" src="san-francisco-pl.jpg" alt="San Francisco's Painted Ladies">
+            <img draggable="false" class="img-round sf-image-style" src="san-francisco-trolley.jpg" alt="San Francisco's Trolley">
+        </div>
+        <div style="text-align: center; margin-top: 50px; margin-left: 20px; margin-right: 20px;">
+            <p>
+                San Francisco, despite horrible media, is a <span class="underline">very beautiful city</span>! Me and my family have been living here for nearly 13 years, and I'd like to share some
+                fun facts of the city with you!
+            </p>
+            <p>
+                Press the button to get a random fun fact!
+            </p>
+            <button class="btn btn-success" type="button" id="funny_button">
+                Press me!
+            </button>
+        </div>
+        <div class="alert alert-primary" role="alert" id="fun-fact"></div>
+        <script>
+            let button = document.getElementById("funny_button");
+            const original_text = button.textContent;
+            button.addEventListener("mousedown", function(){
+                button.textContent = ":O";
+            })
+            button.addEventListener("mouseup", function(){
+                button.textContent = original_text;
+            })
+            button.addEventListener("click", generateFunFact);
+
+
+            function generateFunFact()
+            {
+                let alert = document.getElementById('fun-fact');
+                let funFacts = {
+                    "1": "The San Francisco Zoo was home to Monarch, one of the last Ursus arctos californicus, a now-extinct grizzly bear subspecies.",
+                    "2": "San Francisco prospered during the Great Depression, with not one bank failing.",
+                    "3": "Alcatraz, the former federal penitentiary, was the only prison to offer hot-water showers at the time.",
+                    "4": "Al Capone, the infamous gangster, started the band “Rock Island” and played the banjo while imprisoned in Alcatraz.",
+                    "5": "Levi's jeans, an iconic fashion staple, were invented in San Francisco.",
+                    "6": "Golden Gate Park is 20% larger than New York City's Central Park.",
+                    "7": "The famous San Francisco fog is affectionately known as “Karl”.",
+                    "8": "The modern-day fortune cookie was invented in San Francisco in the late 1890s.",
+                    "9": "San Francisco is built on just 7 miles by 7 miles of land."
+                }
+                let chooseFunFact = Math.floor(Math.random() * 9) + 1;
+                alert.textContent = funFacts[chooseFunFact];
+            }
+        </script>
+    </body>
+</html>
