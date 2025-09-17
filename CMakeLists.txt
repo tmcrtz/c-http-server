@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(http-server)
 
-set(SOURCE_FILES
-	src/frontend/front_page.js
+set(SOURCE_FILE)
 	src/backend/server.c
 )
 
