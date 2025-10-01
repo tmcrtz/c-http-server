@@ -39,7 +39,11 @@ int main(void)
 		NULL, 
 		&hints, 
 		&result);
-	printf("%i\n", error_code);
+
+	if (error_code != 0)
+	{
+		printf("%i\n", error_code);
+	}
 
 
 	return 0;
