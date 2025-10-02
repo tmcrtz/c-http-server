@@ -6,7 +6,7 @@
 int main(void)
 {
     // install CTRL-C handler
-    if (!SetConsoleCtrlHandler(CtrlCHandler, TRUE))
+    if (!SetConsoleCtrlHandler(CtrlHandler, TRUE))
     {
         printf("Error: Could not set control handler.\n");
         return 1;

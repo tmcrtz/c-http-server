@@ -3,6 +3,6 @@
 
 #include <windows.h> 
 
-BOOL WINAPI CtrlCHandler(DWORD ctrlType);
+BOOL WINAPI CtrlHandler(DWORD ctrlType);
 
 #endif
