@@ -1,20 +1,15 @@
 #include "../../include/server.h"
-#include <stdio.h>
-#include <windows.h>
 #include "pause.h"
 #include "ctrlc_callback.h"
-#define IP_ADDRESS "127.0.0.1"
 
+#define IP_ADDRESS "127.0.0.1"
 #define WINDOWS false 
 #define POSIX   false
 
 #if WINDOWS
-// TODO: windows implementation
-
 
 int main(void)
 {
-	// TODO: Write stuff.
 	// install CTRL-C handler
     if (!SetConsoleCtrlHandler(CtrlHandler, TRUE))
     {
@@ -34,9 +29,6 @@ int main(void)
 
 
 #elif POSIX
-// remove defined(_WIN32) before prod, but for now keep it so the lsp works on windows.
-// TODO: posix implementation
-
 
 int main(void)
 {
