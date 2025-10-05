@@ -3,6 +3,8 @@ project(http-server)
 
 set(SOURCE_FILES
 	src/backend/server.c
+	src/backend/ctrlc_callback.c
+	src/backend/pause.c
 )
 
 if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
