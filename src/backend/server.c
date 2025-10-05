@@ -3,10 +3,8 @@
 #include "ctrlc_callback.h"
 
 #define IP_ADDRESS "127.0.0.1"
-#define WINDOWS false 
-#define POSIX   false
 
-#if WINDOWS
+#if _WIN32 
 
 int main(void)
 {
@@ -28,18 +26,21 @@ int main(void)
 }
 
 
-#elif POSIX
+#elif defined(__linux__) || defined(__APPLE__) 
 
 int main(void)
 {
 
-	struct addrinfo hints = 
-	{
-		.ai_family 		= AF_INET,     //Allow IPv4
-		.ai_socktype 	= SOCK_STREAM, //TCP socket type
-		.ai_protocol	= IPPROTO_TCP, //TCP protocol
-		.ai_flags 		= 0,           //no wildcard
-	};
+	struct addrinfo hints;
+	memset(
+			&hints,
+			0,
+			sizeof(hints));
+
+	hints->ai_family   = AF_INET;
+	hints->ai_socktype = SOCK_STREAM;
+	hints->ai_protocol = IPPROTO_TCP;
+	hints->ai_flags    = 0;
 
 	struct addrinfo* result;
 
@@ -52,7 +53,7 @@ int main(void)
 
 	if (error_code == -1)
 	{
-		printf("An error has occured with getaddrinfo(). Error: %s\n", strerror(error_code);
+		printf("An error has occured with getaddrinfo(). Error: %s\n", strerror(error_code));
 		exit(-1);
 	}
 
