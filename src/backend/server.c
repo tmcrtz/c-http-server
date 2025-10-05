@@ -5,7 +5,10 @@
 #include "ctrlc_callback.h"
 #define IP_ADDRESS "127.0.0.1"
 
-#if _WIN32
+#define WINDOWS false 
+#define POSIX   false
+
+#if WINDOWS
 // TODO: windows implementation
 
 
@@ -30,7 +33,7 @@ int main(void)
 }
 
 
-#elif defined(__linux__) || defined(__APPLE__) || defined(_WIN32) 
+#elif POSIX
 // remove defined(_WIN32) before prod, but for now keep it so the lsp works on windows.
 // TODO: posix implementation
 
