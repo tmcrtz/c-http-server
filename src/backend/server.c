@@ -5,6 +5,19 @@
 #define IP_ADDRESS "127.0.0.1"
 
 #if _WIN32 
+// function to initialize winsock
+int init_winsock() 
+	{
+    	WSADATA wsaData;
+
+    	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    	if (result != 0) 
+			{
+			printf("WSAStartup failed: %d\n", result);
+			return 1;
+			}
+		return 0;
+	}
 
 int main(void)
 {
@@ -14,11 +27,19 @@ int main(void)
         printf("Error: Could not set control handler.\n");
         return 1;
     }
-
+	// initialize Winsock
+	if (init_winsock() != 0)
+	{
+		printf("Failed to initialize Winsock.\n");
+		return 1;
+	}
     printf("Server running...\n");
+	printf("Winsock intialized successfully.\n");
 
     // use pause from Task 1
     pause_program();
+	// cleanup Winsock resources
+	WSACleanup();
     // second pause after program exits so that the user can see the exit message before the console window closes
     printf("Exiting program.\n");
     pause_program();
