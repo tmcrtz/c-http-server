@@ -38,7 +38,7 @@ int main(void)
 
     // use pause from Task 1
     pause_program();
-	// cleanup Winsock resources
+	// clean up Winsock resources
 	WSACleanup();
     // second pause after program exits so that the user can see the exit message before the console window closes
     printf("Exiting program.\n");
