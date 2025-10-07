@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <windows.h>
+#include "../../include/ctrlc_callback.h"
 
 // Callback function to handle CTRL-C event
 BOOL WINAPI CtrlHandler(DWORD ctrlType)
