@@ -7,6 +7,9 @@
 	#include <winsock2.h>
 	#include <ws2tcpip.h>
 
+	#include "ctrlc_callback.h"
+	#include "pause.h"
+
 #elif defined(__linux__) || defined(__APPLE__)
 	// POSIX-compliant API includes
 	#include <sys/socket.h>
