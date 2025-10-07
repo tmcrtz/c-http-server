@@ -5,11 +5,11 @@
 #define IP_ADDRESS "127.0.0.1"
 
 #if _WIN32 
+WSADATA wsaData; 
+
 // function to initialize winsock
 int init_winsock() 
 	{
-    	WSADATA wsaData;
-
     	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
     	if (result != 0) 
 			{
@@ -36,7 +36,7 @@ int main(void)
     printf("Server running...\n");
 	printf("Winsock intialized successfully.\n");
 
-    // use pause from Task 1
+    // wait for user input before exiting
     pause_program();
 	// clean up Winsock resources
 	WSACleanup();
