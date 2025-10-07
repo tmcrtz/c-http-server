@@ -1,6 +1,6 @@
 #include "../../include/server.h"
-#include "pause.h"
-#include "ctrlc_callback.h"
+#include "../../include/pause.h"
+#include "../../include/ctrlc_callback.h"
 
 #define IP_ADDRESS "127.0.0.1"
 
