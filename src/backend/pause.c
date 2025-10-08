@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include "../../include/server.h"
 
 // Function to pause the program until the user presses Enter
 void pause_program(void) 
