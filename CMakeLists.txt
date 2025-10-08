@@ -1,11 +1,20 @@
 cmake_minimum_required(VERSION 3.10)
 project(http-server)
 
-set(SOURCE_FILES
-	src/backend/server.c
-	src/backend/ctrlc_callback.c
-	src/backend/pause.c
-)
+if (WIN32)
+	set(SOURCE_FILES
+		src/backend/server.c
+		src/backend/ctrlc_callback.c
+		src/backend/pause.c
+	)
+
+else()
+	set(SOURCE_FILES
+		src/backend/server.c
+	)
+
+endif()
+
 
 if (CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 	add_compile_options(-Wall -Werror -pedantic)
