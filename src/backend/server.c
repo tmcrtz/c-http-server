@@ -1,9 +1,11 @@
 #include "../../include/server.h"
 
-
 #define IP_ADDRESS "127.0.0.1"
+#define PORT "6967"
 
 #if _WIN32 
+#include "pause.h"
+#include "ctrlc_callback.h"
 
 int main(void)
 {
@@ -43,35 +45,70 @@ int main(void)
 #elif defined(__linux__) || defined(__APPLE__) 
 
 int main(void)
-{
+{	
 
-	struct addrinfo hints;
+	struct addrinfo hints; 
 	memset(
-			&hints,
-			0,
-			sizeof(hints));
-
-	hints->ai_family   = AF_INET;
-	hints->ai_socktype = SOCK_STREAM;
-	hints->ai_protocol = IPPROTO_TCP;
-	hints->ai_flags    = 0;
+		&hints,
+		0,
+		sizeof(hints));
+	hints.ai_family 	= AF_INET;     //Allow IPv4
+	hints.ai_socktype 	= SOCK_STREAM; //TCP socket type
+	hints.ai_protocol	= IPPROTO_TCP; //TCP protocol
+	hints.ai_flags 		= 0;           //no wildcard
 
 	struct addrinfo* result;
-
-
-	int error_code = getaddrinfo(
+	
+	int getaddr_error_code = getaddrinfo(
 		IP_ADDRESS, 
-		NULL, 
+		PORT, 
 		&hints, 
 		&result);
+		
+	error_print(getaddr_error_code, "getaddrinfo()");
 
-	if (error_code == -1)
-	{
-		printf("An error has occured with getaddrinfo(). Error: %s\n", strerror(error_code));
-		exit(-1);
-	}
+	int sockfd = socket(
+		result->ai_family,
+		result->ai_socktype,
+		result->ai_protocol);
+	
+	int enable = 1;
+	setsockopt(
+		sockfd, 
+		SOL_SOCKET, 
+		SO_REUSEADDR, 
+		&enable, 
+		sizeof(enable));
+	
+	int bind_error_code = bind(
+		sockfd, 
+		result->ai_addr, 
+		result->ai_addrlen);
+	
+	int listen_error_code = listen(
+		sockfd, 
+		128);
+	
+	int sock_accept = accept(
+		sockfd, 
+		result->ai_addr, 
+		&result->ai_addrlen);
 
 
+	error_print(sockfd, "socket()");
+	error_print(bind_error_code, "bind()");
+	error_print(listen_error_code, "listen()");
+	error_print(sock_accept, "accept()");
+	
+	
+	int shutdown_error_code = shutdown(sockfd, SHUT_RDWR);
+	int close_error_code = close(sockfd);
+	
+	error_print(shutdown_error_code, "shutdown()");
+	error_print(close_error_code, "close()");
+
+	
+	freeaddrinfo(result);
 	return 0;
 }
 

@@ -11,7 +11,9 @@ if (WIN32)
 else()
 	set(SOURCE_FILES
 		src/backend/server.c
+		src/backend/errors.c
 	)
+	
 
 endif()
 
