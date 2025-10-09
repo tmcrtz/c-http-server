@@ -7,6 +7,16 @@
 
 int main(void)
 {
+	WSADATA wsaData;
+
+	// initialize winsock
+	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (result != 0) 
+		{
+		printf("WSAStartup failed: %d\n", result);
+		return 1;
+		}
+
 	// install CTRL-C handler
     if (!SetConsoleCtrlHandler(CtrlHandler, TRUE))
     {
@@ -14,10 +24,15 @@ int main(void)
         return 1;
     }
 
+	printf("Winsock intialized successfully.\n");
     printf("Server running...\n");
 
-    // use pause from Task 1
+    // wait for user input before exiting
     pause_program();
+
+	// clean up Winsock resources
+	WSACleanup();
+	
     // second pause after program exits so that the user can see the exit message before the console window closes
     printf("Exiting program.\n");
     pause_program();
