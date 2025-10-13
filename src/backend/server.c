@@ -46,7 +46,7 @@ int main(void)
 
 int main(void)
 {	
-
+	setbuf(stdout, NULL);
 	struct addrinfo hints; 
 	memset(
 		&hints,
@@ -64,7 +64,7 @@ int main(void)
 		PORT, 
 		&hints, 
 		&result);
-		
+	
 	error_print(getaddr_error_code, "getaddrinfo()");
 
 	int sockfd = socket(
@@ -93,13 +93,46 @@ int main(void)
 		sockfd, 
 		result->ai_addr, 
 		&result->ai_addrlen);
+	
+	char *header = "GET /index.html HTTP/1.1\r\nHost: 127.0.0.1:6967\r\n\r\n"; // asking our address to send us data
+	
+	int send_error_code = send(
+		sock_accept,
+		header,
+		strlen(header),
+		0); // sending above ask
 
+	char buf[2056]; // set buffer size
+	
+	int byte_count = recv(
+		sock_accept, 
+		buf, 
+		sizeof(buf) - 1, 
+		0); // receive size in bytes of info, info put into buffer
+	
+	buf[byte_count] = '\0'; // add null terminator to end of buffer
 
+	printf("recv()'d %d bytes of data in buf\n",byte_count);
+	printf("BUF: %.*s",byte_count,buf); // <-- give printf() the actual data size
+
+	char message[sizeof(buf)]; 
+	strcpy(message, buf); //buf gets modified from strtok, so saving it to message
+
+	char* command;
+	char* file; 
+	command = strtok(buf, " "); //buf is tokenized so no longer useable for general usage
+	file = strtok(NULL, " "); // may have an issue if file name has a space in it
+	
+	printf("COMMAND: %s ", command);
+	printf("FILE: %s", file);
+	
 	error_print(sockfd, "socket()");
 	error_print(bind_error_code, "bind()");
 	error_print(listen_error_code, "listen()");
 	error_print(sock_accept, "accept()");
 	
+	error_print(send_error_code, "send()");
+	error_print(byte_count, "recv()");
 	
 	int shutdown_error_code = shutdown(sockfd, SHUT_RDWR);
 	int close_error_code = close(sockfd);
