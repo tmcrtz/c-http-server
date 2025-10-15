@@ -21,7 +21,7 @@ int main(void)
 	printf("Winsock initialized successfully.\n");
 
 	// set up the addrinfo structure which is passed to the getaddrinfo() function
-	struct addrinfo *addrResult = NULL, *ptr = NULL, hints;
+	struct addrinfo *addrResult = NULL, hints;
 
 	ZeroMemory(&hints, sizeof(hints));
 	hints.ai_family = AF_INET;
@@ -42,7 +42,7 @@ int main(void)
 	SOCKET ListenSocket = socket(addrResult->ai_family, addrResult->ai_socktype, addrResult->ai_protocol);
 	if (ListenSocket == INVALID_SOCKET)
 	{
-		printf("Error at socket(): %ld\n", WSAGetLastError());
+		printf("Error at socket(): %i\n", WSAGetLastError());
 		freeaddrinfo(addrResult);
 		WSACleanup();
 		return 1;
