@@ -77,9 +77,9 @@ int main(void)
 #elif defined(__linux__) || defined(__APPLE__)
 
 int main(void)
-{
-
-	struct addrinfo hints;
+{	
+	setbuf(stdout, NULL);
+	struct addrinfo hints; 
 	memset(
 		&hints,
 		0,
@@ -96,6 +96,7 @@ int main(void)
 		PORT,
 		&hints,
 		&result);
+	
 
 	error_print(getaddr_error_code, "getaddrinfo()");
 
@@ -125,12 +126,47 @@ int main(void)
 		sockfd,
 		result->ai_addr,
 		&result->ai_addrlen);
+	
+	char buf[2056]; // set buffer size
+	
+	int byte_count = recv(
+		sock_accept, 
+		buf, 
+		sizeof(buf) - 1, 
+		0); // receive size in bytes of info, info put into buffer
+	
+	buf[byte_count] = '\0'; // add null terminator to end of buffer
 
+	printf("recv()'d %d bytes of data in buf\n",byte_count);
+	printf("BUF: %.*s",byte_count,buf); // <-- give printf() the actual data size
+
+	char message[sizeof(buf)]; 
+	strcpy(message, buf); //buf gets modified from strtok, so saving it to message
+
+	char* command;
+	char* file; 
+	char* saveptr;
+	
+	command = strtok_r(
+		buf,
+		" ",
+		&saveptr); //buf is tokenized so no longer useable for general usage
+	
+	file = strtok_r(
+		NULL, 
+		" ",
+		&saveptr); // may have an issue if file name has a space in it
+	
+	printf("COMMAND: %s ", command);
+	printf("\nFILE: %s", file);
+	
 	error_print(sockfd, "socket()");
 	error_print(bind_error_code, "bind()");
 	error_print(listen_error_code, "listen()");
 	error_print(sock_accept, "accept()");
-
+	
+	error_print(byte_count, "recv()");
+	
 	int shutdown_error_code = shutdown(sockfd, SHUT_RDWR);
 	int close_error_code = close(sockfd);
 
