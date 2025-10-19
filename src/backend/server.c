@@ -49,6 +49,30 @@ int main(void)
 	}
 	printf("Socket created successfully.\n");
 
+	// set up listening socket
+	iResult = bind(ListenSocket, addrResult->ai_addr, (int)addrResult->ai_addrlen);
+	if (iResult == SOCKET_ERROR)
+	{
+		printf("Bind failed with error: %d\n", WSAGetLastError());
+		closesocket(ListenSocket);
+		freeaddrinfo(addrResult);
+		WSACleanup();
+		return 1;
+	}
+	printf("Socket bound successfully.\n");
+
+	// listen on socket
+	iResult = listen(ListenSocket, SOMAXCONN);
+	if (iResult == SOCKET_ERROR)
+	{
+		printf("Listen failed with error: %d\n", WSAGetLastError());
+		closesocket(ListenSocket);
+		freeaddrinfo(addrResult);
+		WSACleanup();
+		return 1;
+	}
+	printf("Listening for connections...\n");
+
 	// install CTRL-C handler
 	if (!SetConsoleCtrlHandler(CtrlHandler, TRUE))
 	{
