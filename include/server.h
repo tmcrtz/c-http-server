@@ -21,6 +21,7 @@
 	#include <sys/time.h>
 
 	#include "errors.h"
+	#include "return_code.h"
 
 #endif
 
