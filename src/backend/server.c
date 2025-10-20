@@ -184,6 +184,9 @@ int main(void)
 	printf("COMMAND: %s ", command);
 	printf("\nFILE: %s", file);
 	
+	char* return_header = return_code(404, file);
+	printf("\n%s", return_header);
+
 	error_print(sockfd, "socket()");
 	error_print(bind_error_code, "bind()");
 	error_print(listen_error_code, "listen()");
