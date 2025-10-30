@@ -2,6 +2,7 @@
 
 #define IP_ADDRESS "127.0.0.1"
 #define PORT "6967"
+#define FRONTEND_DIR "src/frontend"
 
 #if _WIN32
 #include "../../include/pause.h"
@@ -21,6 +22,96 @@ HttpRequest parse_http_request(const char *request_str)
 	memset(&httpRequest, 0, sizeof(HttpRequest));
 	sscanf(request_str, "%7s %255s", httpRequest.method, httpRequest.file);
 	return httpRequest;
+}
+
+// Function to guess MIME type based on file extension
+const char *get_mime_type(const char *path)
+{
+	const char *ext = strrchr(path, '.');
+	if (!ext)
+		return "text/plain";
+	if (strcmp(ext, ".html") == 0)
+		return "text/html";
+	if (strcmp(ext, ".css") == 0)
+		return "text/css";
+	if (strcmp(ext, ".js") == 0)
+		return "application/javascript";
+	if (strcmp(ext, ".png") == 0)
+		return "image/png";
+	if (strcmp(ext, ".jpg") == 0)
+		return "image/jpeg";
+	if (strcmp(ext, ".gif") == 0)
+		return "image/gif";
+	return "text/plain";
+}
+
+// function to send HTTP response
+void send_response(SOCKET ClientSocket, const char *status_code, const char *content_type, const char *body)
+{
+	char header[512];
+	snprintf(header, sizeof(header),
+			 "HTTP/1.1 %s\r\n"
+			 "Content-Type: %s\r\n"
+			 "Content-Length: %zu\r\n"
+			 "Connection: close\r\n\r\n",
+			 status_code, content_type, strlen(body));
+
+	// send header and body
+	send(ClientSocket, header, strlen(header), 0);
+	send(ClientSocket, body, strlen(body), 0);
+}
+
+// read file contents
+char *read_file(const char *path)
+{
+	FILE *file = fopen(path, "rb");
+	if (!file)
+		return NULL;
+
+	fseek(file, 0, SEEK_END);
+	long length = ftell(file);
+	rewind(file);
+
+	char *buffer = malloc(length + 1);
+	if (!buffer)
+	{
+		fclose(file);
+		return NULL;
+	}
+
+	fread(buffer, 1, length, file);
+	buffer[length] = '\0';
+	fclose(file);
+	return buffer;
+}
+
+// function to handle HTTP request
+void handle_http_request(SOCKET ClientSocket, const char *path)
+{
+	char file_path[512];
+
+	if (strcmp(path, "/") == 0)
+		snprintf(file_path, sizeof(file_path), "%s/index.html", FRONTEND_DIR);
+	else
+		snprintf(file_path, sizeof(file_path), "%s%s", FRONTEND_DIR, path);
+
+	// Try to read the requested file
+	char *file_content = read_file(file_path);
+
+	if (file_content)
+	{
+		const char *content_type = get_mime_type(file_path);
+		// File found — send 200 OK response
+		send_response(ClientSocket, "200 OK", content_type, file_content);
+		free(file_content);
+	}
+
+	else
+	{
+		// File not found — send 404 page
+		const char *body = "<h1>404 Not Found</h1>";
+		send_response(ClientSocket, "404 Not Found", "text/html", body);
+	}
 }
 
 int main(void)
@@ -81,11 +172,11 @@ int main(void)
 	iResult = listen(ListenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR)
 	{
-	printf("Listen failed with error: %d\n", WSAGetLastError());
-	closesocket(ListenSocket);
-	freeaddrinfo(addrResult);
-	WSACleanup();
-	return 1;
+		printf("Listen failed with error: %d\n", WSAGetLastError());
+		closesocket(ListenSocket);
+		freeaddrinfo(addrResult);
+		WSACleanup();
+		return 1;
 	}
 	printf("Listening for connections...\n");
 
@@ -126,7 +217,14 @@ int main(void)
 			// parse HTTP request
 			HttpRequest httpRequest = parse_http_request(recvbuf);
 			printf("Parsed HTTP Request - Method: %s, File: %s\n", httpRequest.method, httpRequest.file);
+
+			// handle GET requests
+			if (strcmp(httpRequest.method, "GET") == 0)
+			{
+				handle_http_request(ClientSocket, httpRequest.file);
+			}
 		}
+
 		else if (iResult == 0)
 			printf("Connection closing...\n");
 		else
@@ -136,7 +234,7 @@ int main(void)
 		closesocket(ClientSocket);
 		printf("Client disconnected.\n");
 	}
-	
+
 	// wait for user input before exiting
 	pause_program();
 
