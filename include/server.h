@@ -19,9 +19,12 @@
 	#include <errno.h>
 	#include <unistd.h>
 	#include <sys/time.h>
+	#include <signal.h>
 
 	#include "errors.h"
 	#include "return_code.h"
+	#include "ctrlc_callback.h"
+	#include "pause.h"
 
 #endif
 

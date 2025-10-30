@@ -13,6 +13,8 @@ else()
 		src/backend/server.c
 		src/backend/errors.c
 		src/backend/return_code.c
+		src/backend/pause.c
+		src/backend/ctrlc_callback.c
 	)
 	
 

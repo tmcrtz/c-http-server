@@ -1,5 +1,5 @@
 #include "../../include/server.h"
-
+#if _WIN32
 // Callback function to handle CTRL-C event
 BOOL WINAPI CtrlHandler(DWORD ctrlType)
 {
@@ -29,3 +29,12 @@ BOOL WINAPI CtrlHandler(DWORD ctrlType)
         return FALSE;
     }
 }
+
+#elif defined(__linux__) || defined(__APPLE__)
+
+void CtrlHandler(int key) 
+{
+    printf("\nCTRL-C pressed\n");
+}
+
+#endif
