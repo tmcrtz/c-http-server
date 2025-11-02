@@ -253,6 +253,17 @@ int main(void)
 
 int main(void)
 {
+   struct sigaction act;
+
+   act.sa_handler = CtrlHandler;
+   sigemptyset(&act.sa_mask);
+   act.sa_flags = 0; 
+
+   sigaction(
+	SIGINT,
+	&act,
+	NULL); // listen for CTRL-C
+	
 	setbuf(stdout, NULL);
 	struct addrinfo hints;
 	memset(
@@ -271,13 +282,13 @@ int main(void)
 		PORT,
 		&hints,
 		&result);
-
 	error_print(getaddr_error_code, "getaddrinfo()");
 
 	int sockfd = socket(
 		result->ai_family,
 		result->ai_socktype,
 		result->ai_protocol);
+	error_print(sockfd, "socket()");
 
 	int enable = 1;
 	setsockopt(
@@ -291,15 +302,18 @@ int main(void)
 		sockfd,
 		result->ai_addr,
 		result->ai_addrlen);
+	error_print(bind_error_code, "bind()");
 
 	int listen_error_code = listen(
 		sockfd,
 		128);
+	error_print(listen_error_code, "listen()");
 
 	int sock_accept = accept(
 		sockfd,
 		result->ai_addr,
 		&result->ai_addrlen);
+	error_print(sock_accept, "accept()");
 
 	char buf[2056]; // set buffer size
 
@@ -308,6 +322,7 @@ int main(void)
 		buf,
 		sizeof(buf) - 1,
 		0); // receive size in bytes of info, info put into buffer
+	error_print(byte_count, "recv()");
 
 	buf[byte_count] = '\0'; // add null terminator to end of buffer
 
@@ -337,20 +352,15 @@ int main(void)
 	char *return_header = return_code(404, file);
 	printf("\n%s", return_header);
 
-	error_print(sockfd, "socket()");
-	error_print(bind_error_code, "bind()");
-	error_print(listen_error_code, "listen()");
-	error_print(sock_accept, "accept()");
-
-	error_print(byte_count, "recv()");
-
 	int shutdown_error_code = shutdown(sockfd, SHUT_RDWR);
-	int close_error_code = close(sockfd);
-
 	error_print(shutdown_error_code, "shutdown()");
+
+	int close_error_code = close(sockfd);
 	error_print(close_error_code, "close()");
 
 	freeaddrinfo(result);
+
+	pause_program();
 	return 0;
 }
 
