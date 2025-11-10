@@ -25,6 +25,7 @@
 	#include "return_code.h"
 	#include "ctrlc_callback.h"
 	#include "pause.h"
+	#include "return_file.h"
 
 #endif
 
